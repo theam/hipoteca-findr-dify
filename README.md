@@ -1,36 +1,73 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Hipoteca Findr
 
-## Getting Started
+Tu asistente hipotecario con IA. Resuelve tus dudas sobre hipotecas sin sesgos comerciales.
 
-First, run the development server:
+## 🚀 Quick Start
+
+### 1. Instalar dependencias
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Configurar Dify
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Copia el archivo de ejemplo y configura tu API key de Dify:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+cp .env.example .env.local
+```
 
-## Learn More
+Edita `.env.local`:
 
-To learn more about Next.js, take a look at the following resources:
+```env
+DIFY_API_KEY=app-tu-api-key-de-dify
+DIFY_API_URL=https://api.dify.ai/v1
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3. Ejecutar
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+pnpm dev
+```
 
-## Deploy on Vercel
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📁 Estructura
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+├── app/
+│   ├── api/chat/route.ts    # API proxy para Dify
+│   ├── layout.tsx           # Layout principal
+│   └── page.tsx             # Página del chat
+├── components/chat/
+│   ├── chat-container.tsx   # Contenedor principal
+│   ├── chat-input.tsx       # Input con auto-resize
+│   ├── chat-message.tsx     # Burbujas de mensajes
+│   └── welcome-screen.tsx   # Pantalla de bienvenida
+├── hooks/
+│   └── use-chat.ts          # Hook de estado del chat
+├── lib/
+│   └── dify-client.ts       # Cliente para API de Dify (SSE)
+└── types/
+    └── chat.ts              # Tipos TypeScript
+```
+
+## 🔧 Variables de Entorno
+
+| Variable | Requerida | Descripción |
+|----------|-----------|-------------|
+| `DIFY_API_KEY` | Sí | API Key de tu aplicación en Dify |
+| `DIFY_API_URL` | No | URL de la API (default: `https://api.dify.ai/v1`) |
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 16 (App Router)
+- **Styling**: Tailwind CSS 4
+- **Backend AI**: Dify
+- **Streaming**: Server-Sent Events (SSE)
+
+## 📝 Licencia
+
+MIT
