@@ -24,9 +24,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
         return content.split("\n").map((line, index) => {
             const trimmedLine = line.trim();
 
-            // Títulos h1, h2, h3
-            if (trimmedLine.startsWith("# ") || trimmedLine.startsWith("## ") || trimmedLine.startsWith("### ")) {
-                const text = trimmedLine.replace(/^#+\s+/, "");
+            // Títulos markdown (cualquier nivel: #, ##, ###, ####, etc.)
+            const headerMatch = trimmedLine.match(/^(#{1,6})\s+(.+)$/);
+            if (headerMatch) {
+                const text = headerMatch[2];
                 return (
                     <h3 key={index} className="text-lg font-bold mb-2 mt-4 first:mt-0 text-[#404040]">
                         {text}
