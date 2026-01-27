@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
 
 // Proxy para INE API - Índice de Precios de Vivienda
-// Endpoint original: https://servicios.ine.es/wstempus/js/ES/DATOS_SERIE/IPV994
+// Tabla 25171: Índices por CCAA: general, vivienda nueva y de segunda mano
+// Limitado a últimos 3 periodos con ?nult=3
 
 const INE_API_BASE = 'https://servicios.ine.es/wstempus/js/ES';
 
 export async function GET() {
     try {
-          const response = await fetch(`${INE_API_BASE}/DATOS_SERIE/IPV994`, {
+          const response = await fetch(`${INE_API_BASE}/DATOS_TABLA/25171?nult=3`, {
                   headers: {
                             'Accept': 'application/json',
                   },

@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
 
 // Proxy para INE API - Hipotecas constituidas
-// Endpoint original: https://servicios.ine.es/wstempus/js/ES/DATOS_SERIE/HPT3459
+// Tabla 3200: Hipotecas constituidas sobre el total de fincas por naturaleza
+// Limitado a últimos 3 periodos con ?nult=3
 
 const INE_API_BASE = 'https://servicios.ine.es/wstempus/js/ES';
 
 export async function GET() {
     try {
-          const response = await fetch(`${INE_API_BASE}/DATOS_SERIE/HPT3459`, {
+          const response = await fetch(`${INE_API_BASE}/DATOS_TABLA/3200?nult=3`, {
                   headers: {
                             'Accept': 'application/json',
                   },
