@@ -34,6 +34,21 @@ export async function GET(request: Request) {
 
       const data = await response.json();
 
+      // Limitar a las últimas 3 observaciones para no saturar el contexto del modelo
+      const series = data?.dataSets?.[0]?.series;
+      if (series) {
+          for (const key of Object.keys(series)) {
+              const observations = series[key]?.observations;
+              if (observations) {
+                  const keys = Object.keys(observations).sort((a, b) => Number(a) - Number(b));
+                  const lastKeys = keys.slice(-3);
+                  series[key].observations = Object.fromEntries(
+                      lastKeys.map((k) => [k, observations[k]])
+                  );
+              }
+          }
+      }
+
       return NextResponse.json(data, {
               headers: {
                         'Access-Control-Allow-Origin': '*',
