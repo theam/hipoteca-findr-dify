@@ -5,18 +5,9 @@ import { NextResponse } from 'next/server';
 
 const BCE_API_BASE = 'https://data-api.ecb.europa.eu/service';
 
-export async function GET(request: Request) {
+export async function GET() {
     try {
-          const { searchParams } = new URL(request.url);
-
-      // Construir URL con parámetros de consulta
-      const params = new URLSearchParams();
-          searchParams.forEach((value, key) => {
-                  params.append(key, value);
-          });
-
-      const queryString = params.toString();
-          const url = `${BCE_API_BASE}/data/FM/M.U2.EUR.RT.MM.EURIBOR1YD_.HSTA${queryString ? `?${queryString}` : ''}`;
+      const url = `${BCE_API_BASE}/data/FM/M.U2.EUR.RT.MM.EURIBOR1YD_.HSTA?lastNObservations=3`;
 
       const response = await fetch(url, {
               headers: {
@@ -34,22 +25,23 @@ export async function GET(request: Request) {
 
       const data = await response.json();
 
-      // Limitar a las últimas 3 observaciones para no saturar el contexto del modelo
-      const series = data?.dataSets?.[0]?.series;
-      if (series) {
-          for (const key of Object.keys(series)) {
-              const observations = series[key]?.observations;
-              if (observations) {
-                  const keys = Object.keys(observations).sort((a, b) => Number(a) - Number(b));
-                  const lastKeys = keys.slice(-3);
-                  series[key].observations = Object.fromEntries(
-                      lastKeys.map((k) => [k, observations[k]])
-                  );
-              }
-          }
-      }
+      // Extraer solo los valores relevantes para un JSON ligero
+      const timePeriods = data?.structure?.dimensions?.observation?.[0]?.values || [];
+      const observations = data?.dataSets?.[0]?.series?.['0:0:0:0:0:0:0']?.observations || {};
 
-      return NextResponse.json(data, {
+      const valores = Object.entries(observations).map(([idx, val]) => ({
+          fecha: timePeriods[Number(idx)]?.id || null,
+          valor: (val as number[])[0],
+      }));
+
+      const ultimo = valores[valores.length - 1];
+
+      return NextResponse.json({
+          euribor12m: ultimo?.valor ?? null,
+          fecha: ultimo?.fecha ?? null,
+          fuente: 'Banco Central Europeo',
+          historico: valores,
+      }, {
               headers: {
                         'Access-Control-Allow-Origin': '*',
                         'Access-Control-Allow-Methods': 'GET, OPTIONS',
